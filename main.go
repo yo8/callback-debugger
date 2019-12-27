@@ -20,10 +20,9 @@ func printRequest(w http.ResponseWriter, req *http.Request) {
 	}
 
 	reqCount++
-	dumpStr := string(requestDump)
-	fmt.Printf("\n[Request #%d - %v]\n%s\n", reqCount, time.Now().Local(), dumpStr)
-
-	fmt.Fprintf(w, "Got: %s\n", dumpStr)
+	dumpStr := fmt.Sprintf("[Request #%d - %v]\n%s", reqCount, time.Now().Local(), string(requestDump))
+	fmt.Printf("\n%s\n", dumpStr)
+	fmt.Fprintf(w, dumpStr)
 }
 
 func main() {
