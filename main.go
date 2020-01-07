@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httputil"
+	"os"
+	"strconv"
 	"time"
 )
 
@@ -26,7 +28,23 @@ func printRequest(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	port := 8880
+	if len(os.Args) >= 2 {
+		rawPort := os.Args[1]
+		if num, err := strconv.Atoi(rawPort); err != nil {
+			fmt.Printf("%q is not a port number: %v\n", rawPort, err)
+			os.Exit(1)
+		} else {
+			port = num
+		}
+	}
+	fmt.Println("listening on port:", port)
+
 	http.HandleFunc("/", hello)
 	http.HandleFunc("/print", printRequest)
-	http.ListenAndServe(":8090", nil)
+
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
+		fmt.Printf("failed to listen on port %d, got error: %v\n", port, err)
+		os.Exit(2)
+	}
 }
